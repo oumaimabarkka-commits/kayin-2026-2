@@ -104,7 +104,6 @@ var logosMap = {
     "ATPL CASELAS": "ATPL CASELAS .png"
 };
 
-// Map pour synchroniser les couleurs HEX avec les épingles Leaflet
 var leafletIconMap = {
     "#003399": "blue", "#cc0000": "red", "#006600": "green", "#000000": "black",
     "#424949": "grey", "#7d3c98": "violet", "#af601a": "orange", "#7e5109": "yellow",
@@ -162,11 +161,17 @@ fetch("data.csv")
 
                     let hex = codesCouleurs[f] || "#1f77b4";
                     
+                    // --- MODIFICATION DE LA BULLE D'INFO ---
                     let popupContent = `
-                        <div style="line-height:1.6;">
-                            <b>Fournisseur :</b> ${f}<br>
-                            <b>Produit :</b> ${p}<br>
-                            <b>Ville :</b> ${v} (${cp})
+                        <div style="line-height:1.6; font-size:12px; min-width:200px;">
+                            <b>Fournisseur :</b> ${f || '—'}<br>
+                            <b>Adresse :</b> ${row["Adresse"] || '—'}<br>
+                            <b>CP :</b> ${cp || '—'}<br>
+                            <b>Ville :</b> ${v || '—'}<br>
+                            <b>Région :</b> ${row["Région"] || 'ile de France'}<br>
+                            <b>Pays :</b> ${row["Pays"] || 'France'}<br>
+                            <b>Produit :</b> ${p || '—'}<br>
+                            <b>Email :</b> ${row["Email"] || '—'}
                         </div>
                     `;
 
@@ -213,7 +218,6 @@ function ajouterLegendes() {
         var span = document.createElement("span");
         let iconHtml = "";
         
-        // CONDITION : Si pas de logo (url image), on met le carré de couleur
         if (logosMap[f]) {
             iconHtml = `<img src="${logosMap[f]}" class="legend-logo" onerror="this.outerHTML='<div class=\'legend-color-box\' style=\'background:${codesCouleurs[f]}\'></div>'">`;
         } else {
@@ -225,7 +229,6 @@ function ajouterLegendes() {
         return span;
     }
 
-    // Groupe 2 à Gauche
     var legendLeft = L.control({position: 'bottomleft'});
     legendLeft.onAdd = function() {
         var div = L.DomUtil.create('div', 'legend');
@@ -237,7 +240,6 @@ function ajouterLegendes() {
     };
     legendLeft.addTo(map);
 
-    // Groupe 1 à Droite
     var legendRight = L.control({position: 'bottomright'});
     legendRight.onAdd = function() {
         var div = L.DomUtil.create('div', 'legend');
