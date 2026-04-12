@@ -30,7 +30,7 @@
         .legend span:hover { background: #f0f0f0; }
 
         .legend-logo { width: 20px; height: 20px; object-fit: contain; border-radius: 2px; background: white; border: 1px solid #f0f0f0; }
-        .legend-color-box { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid #000; flex-shrink: 0; }
+        .legend-color-box { display: inline-block; width: 16px; height: 16px; border-radius: 3px; border: 1px solid #999; }
     </style>
 </head>
 <body>
@@ -104,16 +104,15 @@ var logosMap = {
     "ATPL CASELAS": "ATPL CASELAS .png"
 };
 
-// Synchronisation des couleurs d'épingles avec les codes hexadécimaux
+// Map pour synchroniser les couleurs HEX avec les épingles Leaflet
 var leafletIconMap = {
     "#003399": "blue", "#cc0000": "red", "#006600": "green", "#000000": "black",
     "#424949": "grey", "#7d3c98": "violet", "#af601a": "orange", "#7e5109": "yellow",
-    "#1a5276": "blue", "#922b21": "red", "#1d8348": "green", "#641e16": "red",
-    "#145a32": "green", "#7b241c": "red"
+    "#1a5276": "blue", "#922b21": "red", "#1d8348": "green", "#212f3d": "black"
 };
 
 function getIcon(hex) {
-    let colorName = leafletIconMap[hex] || "blue"; 
+    let colorName = leafletIconMap[hex] || "blue";
     return new L.Icon({
         iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${colorName}.png`,
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
@@ -166,11 +165,8 @@ fetch("data.csv")
                     let popupContent = `
                         <div style="line-height:1.6;">
                             <b>Fournisseur :</b> ${f}<br>
-                            <b>Adresse :</b> ${row["adresse complete"] || ""}<br>
-                            <b>CP :</b> ${cp}<br>
-                            <b>Ville :</b> ${v}<br>
                             <b>Produit :</b> ${p}<br>
-                            <b>Email :</b> <a href="mailto:${row["Email"]}">${row["Email"] || ""}</a>
+                            <b>Ville :</b> ${v} (${cp})
                         </div>
                     `;
 
@@ -215,22 +211,21 @@ function ajouterLegendes() {
     
     function createLegendItem(f) {
         var span = document.createElement("span");
-        let logoHtml = "";
-        let colorHex = codesCouleurs[f] || "#ccc";
+        let iconHtml = "";
         
-        // Carré de couleur synchronisé
-        let colorBox = `<div class="legend-color-box" style="background:${colorHex}"></div>`;
-        
-        // Logo si disponible
+        // CONDITION : Si pas de logo (url image), on met le carré de couleur
         if (logosMap[f]) {
-            logoHtml = `<img src="${logosMap[f]}" class="legend-logo" onerror="this.style.display='none'">`;
+            iconHtml = `<img src="${logosMap[f]}" class="legend-logo" onerror="this.outerHTML='<div class=\'legend-color-box\' style=\'background:${codesCouleurs[f]}\'></div>'">`;
+        } else {
+            iconHtml = `<div class="legend-color-box" style="background:${codesCouleurs[f] || '#ccc'}"></div>`;
         }
 
-        span.innerHTML = `${colorBox} ${logoHtml} ${f}`;
+        span.innerHTML = `${iconHtml} ${f}`;
         span.onclick = () => { document.getElementById("filtreNom").value = f; filtrer(); };
         return span;
     }
 
+    // Groupe 2 à Gauche
     var legendLeft = L.control({position: 'bottomleft'});
     legendLeft.onAdd = function() {
         var div = L.DomUtil.create('div', 'legend');
@@ -242,6 +237,7 @@ function ajouterLegendes() {
     };
     legendLeft.addTo(map);
 
+    // Groupe 1 à Droite
     var legendRight = L.control({position: 'bottomright'});
     legendRight.onAdd = function() {
         var div = L.DomUtil.create('div', 'legend');
