@@ -161,19 +161,18 @@ fetch("data.csv")
 
                     let hex = codesCouleurs[f] || "#1f77b4";
                     
-                    // --- MODIFICATION DE LA BULLE D'INFO ---
+                    // --- BULLE D'INFO (Changement appliqué ici) ---
                     let popupContent = `
-                        <div style="line-height:1.6; font-size:12px; min-width:200px;">
-                            <b>Fournisseur :</b> ${f || '—'}<br>
-                            <b>Adresse :</b> ${row["Adresse"] || '—'}<br>
-                            <b>CP :</b> ${cp || '—'}<br>
-                            <b>Ville :</b> ${v || '—'}<br>
-                            <b>Région :</b> ${row["Région"] || 'ile de France'}<br>
-                            <b>Pays :</b> ${row["Pays"] || 'France'}<br>
-                            <b>Produit :</b> ${p || '—'}<br>
-                            <b>Email :</b> ${row["Email"] || '—'}
-                        </div>
-                    `;
+                        <div style="line-height:1.6;">
+                            <b>Fournisseur :</b> ${f}<br>
+                            <b>Adresse :</b> ${row["adresse complete"] || ""}<br>
+                            <b>CP :</b> ${cp}<br>
+                            <b>Ville :</b> ${v}<br>
+                            <b>Région :</b> ${row["region"] || ""}<br>
+                            <b>Pays :</b> ${row["Pays"] || ""}<br>
+                            <b>Produit :</b> ${p}<br>
+                            <b>Email :</b> <a href="mailto:${row["Email"]}">${row["Email"] || ""}</a>
+                        </div>`;
 
                     let m = L.marker([latF, lngF], { icon: getIcon(hex) })
                              .bindPopup(popupContent);
