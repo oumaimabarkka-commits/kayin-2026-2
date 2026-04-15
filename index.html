@@ -25,7 +25,15 @@
             width: 260px; 
             font-size: 11px;
         }
-        .legend b.title { font-size: 12px; display: block; margin-bottom: 8px; border-bottom: 2px solid #eee; color: #2c3e50; line-height: 1.4; }
+        /* MODIFICATION : Titre G1 et G2 en rouge */
+        .legend b.title { 
+            font-size: 12px; 
+            display: block; 
+            margin-bottom: 8px; 
+            border-bottom: 2px solid #eee; 
+            color: red; 
+            line-height: 1.4; 
+        }
         .legend span { cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 3px 5px; border-radius: 3px; font-weight: bold; }
         .legend span:hover { background: #f0f0f0; }
 
@@ -161,7 +169,6 @@ fetch("data.csv")
 
                     let hex = codesCouleurs[f] || "#1f77b4";
                     
-                    // --- BULLE D'INFO (Changement appliqué ici) ---
                     let popupContent = `
                         <div style="line-height:1.6;">
                             <b>Fournisseur :</b> ${f}<br>
